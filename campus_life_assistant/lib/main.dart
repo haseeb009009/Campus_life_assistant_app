@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:campus_life_assistant/firebase_options.dart';
+import 'package:campus_life_assistant/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_page.dart';
@@ -32,6 +35,7 @@ class MyApp extends StatelessWidget {
             routes: {
               '/signup': (context) => const SignUpPage(),
               '/login': (context) => const LoginPage(),
+              '/home': (context) => const HomePage(),
             },
           );
         }

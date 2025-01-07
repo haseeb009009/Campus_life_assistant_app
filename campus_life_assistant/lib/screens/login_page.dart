@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:campus_life_assistant/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../services/auth_service.dart';
@@ -13,7 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-
   void _login() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
@@ -26,7 +28,10 @@ class _LoginPageState extends State<LoginPage> {
     var user = await _authService.login(email, password);
     if (user != null) {
       Fluttertoast.showToast(msg: "Login Successful");
-      // Navigate to the home page or dashboard after successful login.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     } else {
       Fluttertoast.showToast(msg: "Login Failed");
     }
