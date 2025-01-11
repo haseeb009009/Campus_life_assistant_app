@@ -24,26 +24,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return MaterialApp(
-            title: 'Campus Life Assistant',
-            theme: ThemeData(primarySwatch: Colors.blue),
-            home: const LoginPage(),
-            routes: {
-              '/signup': (context) => const SignUpPage(),
-              '/login': (context) => const LoginPage(),
-              '/home': (context) => const HomePage(),
-            },
-          );
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text("Error initializing Firebase"));
-        }
-        return const Center(child: CircularProgressIndicator());
+    return MaterialApp(
+      title: 'Campus Life Assistant',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const LoginPage(),
+      routes: {
+        '/signup': (context) => const SignUpPage(),
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
       },
     );
   }
 }
+

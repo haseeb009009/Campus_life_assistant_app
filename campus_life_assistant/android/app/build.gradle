@@ -13,7 +13,7 @@ android {
 compileOptions {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-    allWarningsAsErrors false
+    //allWarningsAsErrors false
 }
 
     kotlinOptions {
@@ -35,6 +35,9 @@ compileOptions {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            minifyEnabled true // Enables ProGuard
+            shrinkResources true // Removes unused resources
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -42,3 +45,4 @@ compileOptions {
 flutter {
     source = "../.."
 }
+apply plugin: 'com.google.gms.google-services'
