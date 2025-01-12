@@ -68,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
             TextField(
               controller: _passwordController,
               decoration: const InputDecoration(
-                labelText: "Password",
+                labelText: "Password (minimum 6 charaters)",
                 border: OutlineInputBorder(),
               ),
               obscureText: true,

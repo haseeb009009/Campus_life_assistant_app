@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/class_schedule_page.dart';
 import '../screens/event_page.dart';
+import '../screens/assignment_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -32,6 +33,15 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text("View Events"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AssignmentPage()),
+                );
+              },
+              child: const Text("View Assignments"),
             ),
           ],
         ),

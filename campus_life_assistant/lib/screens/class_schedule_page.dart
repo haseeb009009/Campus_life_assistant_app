@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/class_schedule.dart';
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
+import '../services/deadline_reminder_service.dart'; // Import the reminder service
 
 class ClassSchedulePage extends StatefulWidget {
   const ClassSchedulePage({Key? key}) : super(key: key);
@@ -99,8 +100,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 }
 
                 final newSchedule = ClassSchedule(
-                  id: schedule?.id ??
-                      DateTime.now().millisecondsSinceEpoch.toString(),
+                  id: schedule?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                   title: titleController.text,
                   description: descriptionController.text,
                   startTime: DateTime.parse(startTimeController.text),
@@ -114,6 +114,13 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   await _firestoreService.updateClassSchedule(newSchedule);
                   await _localStorageService.updateClassSchedule(newSchedule);
                 }
+
+                // Schedule or update the reminder for this class
+                await DeadlineReminderService.scheduleClassReminder(
+                  title: newSchedule.title,
+                  deadline: newSchedule.startTime, // Reminder for class start time
+                  id: int.parse(newSchedule.id),
+                );
 
                 if (mounted) {
                   Navigator.pop(context);
@@ -130,6 +137,10 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
   void _deleteSchedule(ClassSchedule schedule) async {
     await _firestoreService.deleteClassSchedule(schedule.id);
     await _localStorageService.deleteClassSchedule(schedule.id);
+
+    // Cancel the reminder for this class
+    await DeadlineReminderService.cancelReminder(int.parse(schedule.id));
+
     setState(() {});
   }
 
