@@ -1,3 +1,4 @@
+import 'package:campus_life_assistant/screens/study_group_page.dart';
 import 'package:flutter/material.dart';
 import '../screens/class_schedule_page.dart';
 import '../screens/event_page.dart';
@@ -20,7 +21,8 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ClassSchedulePage()),
+                  MaterialPageRoute(
+                      builder: (context) => const ClassSchedulePage()),
                 );
               },
               child: const Text("View Classes"),
@@ -38,10 +40,21 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AssignmentPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const AssignmentPage()),
                 );
               },
               child: const Text("View Assignments"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const StudyGroupPage()),
+                );
+              },
+              child: const Text("View Study Groups"),
             ),
           ],
         ),
