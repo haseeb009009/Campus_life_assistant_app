@@ -1,3 +1,4 @@
+import 'package:campus_life_assistant/screens/feedback_page.dart';
 import 'package:campus_life_assistant/screens/study_group_page.dart';
 import 'package:flutter/material.dart';
 import '../screens/class_schedule_page.dart';
@@ -55,6 +56,15 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text("View Study Groups"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                );
+              },
+              child: const Text("Feedback System"),
             ),
           ],
         ),

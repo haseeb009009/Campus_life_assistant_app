@@ -10,7 +10,8 @@ class StudyGroupPage extends StatefulWidget {
 }
 
 class _StudyGroupPageState extends State<StudyGroupPage> {
-  final StudyGroupFirestoreService _firestoreService = StudyGroupFirestoreService();
+  final StudyGroupFirestoreService _firestoreService =
+      StudyGroupFirestoreService();
 
   Future<void> _showStudyGroupDialog({StudyGroup? group}) async {
     final TextEditingController nameController =
@@ -22,7 +23,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(group == null ? 'Create Study Group' : 'Edit Study Group'),
+          title:
+              Text(group == null ? 'Create Study Group' : 'Edit Study Group'),
           content: SingleChildScrollView(
             child: Column(
               children: [
@@ -44,7 +46,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (nameController.text.isEmpty || descriptionController.text.isEmpty) {
+                if (nameController.text.isEmpty ||
+                    descriptionController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('All fields are required')),
                   );
@@ -52,7 +55,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
                 }
 
                 final newGroup = StudyGroup(
-                  id: group?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                  id: group?.id ??
+                      DateTime.now().millisecondsSinceEpoch.toString(),
                   name: nameController.text,
                   description: descriptionController.text,
                   members: group?.members ?? [],
@@ -61,7 +65,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
                 if (group == null) {
                   await _firestoreService.createStudyGroup(newGroup);
                 } else {
-                  await _firestoreService.createStudyGroup(newGroup); // Update logic if needed
+                  await _firestoreService
+                      .createStudyGroup(newGroup); // Update logic if needed
                 }
 
                 if (mounted) Navigator.pop(context);
@@ -107,7 +112,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
                       icon: const Icon(Icons.group_add),
                       onPressed: () async {
                         // Replace 'user123' with the actual user ID
-                        await _firestoreService.joinStudyGroup(group.id, 'user123');
+                        await _firestoreService.joinStudyGroup(
+                            group.id, 'user123');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Joined group')),
                         );
@@ -117,7 +123,8 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
                       icon: const Icon(Icons.group_remove),
                       onPressed: () async {
                         // Replace 'user123' with the actual user ID
-                        await _firestoreService.leaveStudyGroup(group.id, 'user123');
+                        await _firestoreService.leaveStudyGroup(
+                            group.id, 'haseeb009');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Left group')),
                         );
