@@ -1,1 +1,0 @@
-# Campus_life_assistant_app
