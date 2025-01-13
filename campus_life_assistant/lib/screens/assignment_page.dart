@@ -99,7 +99,6 @@ class _AssignmentPageState extends State<AssignmentPage> {
                   await _localService.updateAssignment(newAssignment);
                 }
 
-                // ignore: use_build_context_synchronously
                 if (mounted) Navigator.pop(context);
               },
               child: Text(assignment == null ? 'Add' : 'Update'),
@@ -116,10 +115,8 @@ class _AssignmentPageState extends State<AssignmentPage> {
     setState(() {});
   }
 
-  /// Sync assignments between Firestore and SQLite
   Future<void> _syncAssignments() async {
     await _syncService.syncData();
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Sync completed!')),
     );
@@ -130,6 +127,8 @@ class _AssignmentPageState extends State<AssignmentPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Assignments'),
+        centerTitle: true,
+        backgroundColor: Colors.lightBlue.shade700,
         actions: [
           IconButton(
             icon: const Icon(Icons.sync),
@@ -137,44 +136,70 @@ class _AssignmentPageState extends State<AssignmentPage> {
           ),
         ],
       ),
-      body: StreamBuilder<List<Assignment>>(
-        stream: _firestoreService.getAssignments(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFB3E5FC), // Light Blue
+              Color(0xFF81D4FA), // Medium Blue
+              Color(0xFF0288D1), // Darker Blue
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: StreamBuilder<List<Assignment>>(
+          stream: _firestoreService.getAssignments(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          final assignments = snapshot.data ?? [];
+            final assignments = snapshot.data ?? [];
 
-          return ListView.builder(
-            itemCount: assignments.length,
-            itemBuilder: (context, index) {
-              final assignment = assignments[index];
-              return ListTile(
-                title: Text(assignment.title),
-                subtitle: Text(assignment.description),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () =>
-                          _showAssignmentDialog(assignment: assignment),
+            return ListView.builder(
+              itemCount: assignments.length,
+              itemBuilder: (context, index) {
+                final assignment = assignments[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Text(
+                      assignment.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _deleteAssignment(assignment),
+                    subtitle: Text(assignment.description),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon:
+                              const Icon(Icons.edit, color: Colors.blueAccent),
+                          onPressed: () =>
+                              _showAssignmentDialog(assignment: assignment),
+                        ),
+                        IconButton(
+                          icon:
+                              const Icon(Icons.delete, color: Colors.redAccent),
+                          onPressed: () => _deleteAssignment(assignment),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAssignmentDialog(),

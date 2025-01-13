@@ -84,58 +84,86 @@ class _StudyGroupPageState extends State<StudyGroupPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Study Groups'),
+        centerTitle: true,
+        backgroundColor: Colors.lightBlue.shade700,
       ),
-      body: StreamBuilder<List<StudyGroup>>(
-        stream: _firestoreService.getStudyGroups(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFB3E5FC), // Light Blue
+              Color(0xFF81D4FA), // Medium Blue
+              Color(0xFF0288D1), // Darker Blue
+            ],
+          ),
+        ),
+        child: StreamBuilder<List<StudyGroup>>(
+          stream: _firestoreService.getStudyGroups(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          final groups = snapshot.data ?? [];
+            final groups = snapshot.data ?? [];
 
-          return ListView.builder(
-            itemCount: groups.length,
-            itemBuilder: (context, index) {
-              final group = groups[index];
-              return ListTile(
-                title: Text(group.name),
-                subtitle: Text(group.description),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.group_add),
-                      onPressed: () async {
-                        // Replace 'user123' with the actual user ID
-                        await _firestoreService.joinStudyGroup(
-                            group.id, 'user123');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Joined group')),
-                        );
-                      },
+            return ListView.builder(
+              itemCount: groups.length,
+              itemBuilder: (context, index) {
+                final group = groups[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 5.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Text(
+                      group.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.group_remove),
-                      onPressed: () async {
-                        // Replace 'user123' with the actual user ID
-                        await _firestoreService.leaveStudyGroup(
-                            group.id, 'haseeb009');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Left group')),
-                        );
-                      },
+                    subtitle: Text(group.description),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon:
+                              const Icon(Icons.group_add, color: Colors.green),
+                          onPressed: () async {
+                            // Replace 'haseeb009' with the actual user ID
+                            await _firestoreService.joinStudyGroup(
+                                group.id, 'haseeb009');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Joined group')),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.group_remove,
+                              color: Colors.redAccent),
+                          onPressed: () async {
+                            // Replace 'haseeb009' with the actual user ID
+                            await _firestoreService.leaveStudyGroup(
+                                group.id, 'haseeb009');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Left group')),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showStudyGroupDialog(),

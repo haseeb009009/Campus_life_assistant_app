@@ -22,7 +22,6 @@ class _EventPageState extends State<EventPage> {
     LocalEventService.initialize();
   }
 
-  /// Displays a form dialog for adding or editing events
   Future<void> _showEventDialog({Event? event}) async {
     final TextEditingController nameController =
         TextEditingController(text: event?.name ?? '');
@@ -72,6 +71,14 @@ class _EventPageState extends State<EventPage> {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shadowColor: Colors.blue.withOpacity(0.5),
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () => _saveEvent(
                 nameController: nameController,
                 locationController: locationController,
@@ -86,7 +93,6 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  /// Builds a reusable TextField widget
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -95,13 +101,17 @@ class _EventPageState extends State<EventPage> {
   }) {
     return TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
       readOnly: readOnly,
       onTap: onTap,
     );
   }
 
-  /// Saves a new or updated event
   Future<void> _saveEvent({
     required TextEditingController nameController,
     required TextEditingController locationController,
@@ -135,17 +145,14 @@ class _EventPageState extends State<EventPage> {
     if (mounted) Navigator.pop(context);
   }
 
-  /// Deletes an event
   Future<void> _deleteEvent(Event event) async {
     await _firestoreService.deleteEvent(event.id);
     await _localService.deleteEvent(event.id);
     setState(() {});
   }
 
-  /// Synchronizes events between Firestore and SQLite
   Future<void> _syncEvents() async {
     await _syncService.syncData();
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Sync completed!')),
     );
@@ -156,6 +163,7 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Events'),
+        backgroundColor: Colors.lightBlue,
         actions: [
           IconButton(
             icon: const Icon(Icons.sync),
@@ -163,7 +171,20 @@ class _EventPageState extends State<EventPage> {
           ),
         ],
       ),
-      body: _buildEventList(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFB3E5FC), // Light Blue
+              Color(0xFF81D4FA), // Medium Blue
+              Color(0xFF0288D1), // Darker Blue
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: _buildEventList(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showEventDialog(),
         child: const Icon(Icons.add),
@@ -171,7 +192,6 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  /// Builds the event list view
   Widget _buildEventList() {
     return StreamBuilder<List<Event>>(
       stream: _firestoreService.getEvents(),
@@ -196,23 +216,30 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  /// Builds a single event list item
   Widget _buildEventListItem(Event event) {
-    return ListTile(
-      title: Text(event.name),
-      subtitle: Text(event.location),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => _showEventDialog(event: event),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _deleteEvent(event),
-          ),
-        ],
+    return Card(
+      color: Colors.white,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: ListTile(
+        title: Text(event.name),
+        subtitle: Text(event.location),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.blueAccent),
+              onPressed: () => _showEventDialog(event: event),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.redAccent),
+              onPressed: () => _deleteEvent(event),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -28,14 +28,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
             builder: (BuildContext context, StateSetter setDialogState) {
               return SingleChildScrollView(
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
                       value: selectedCategory,
                       items: categories
-                          .map((category) => DropdownMenuItem(
-                                value: category,
-                                child: Text(category),
-                              ))
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category,
+                              child: Text(category),
+                            ),
+                          )
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -112,62 +115,80 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feedback'),
+        centerTitle: true,
+        backgroundColor: Colors.lightBlue.shade700,
       ),
-      body: Column(
-        children: [
-          DropdownButton<String>(
-            value: selectedCategory,
-            items: categories
-                .map((category) => DropdownMenuItem(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFB3E5FC), // Light Blue
+              Color(0xFF81D4FA), // Medium Blue
+              Color(0xFF0288D1), // Darker Blue
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            DropdownButton<String>(
+              value: selectedCategory,
+              items: categories
+                  .map(
+                    (category) => DropdownMenuItem(
                       value: category,
                       child: Text(category),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedCategory = value ?? "Course";
-              });
-            },
-          ),
-          Expanded(
-            child: StreamBuilder<List<FeedbackModel>>(
-              stream: _feedbackService.getFeedbackByCategory(selectedCategory),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                final feedbackList = snapshot.data ?? [];
-                return ListView.builder(
-                  itemCount: feedbackList.length,
-                  itemBuilder: (context, index) {
-                    final feedback = feedbackList[index];
-                    return ListTile(
-                      title: Text(feedback.itemName),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(feedback.comment),
-                          Row(
-                            children: List.generate(
-                              feedback.rating.round(),
-                              (index) =>
-                                  const Icon(Icons.star, color: Colors.amber),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value ?? "Course";
+                });
               },
             ),
-          ),
-        ],
+            Expanded(
+              child: StreamBuilder<List<FeedbackModel>>(
+                stream:
+                    _feedbackService.getFeedbackByCategory(selectedCategory),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  final feedbackList = snapshot.data ?? [];
+                  return ListView.builder(
+                    itemCount: feedbackList.length,
+                    itemBuilder: (context, index) {
+                      final feedback = feedbackList[index];
+                      return ListTile(
+                        title: Text(feedback.itemName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(feedback.comment),
+                            Row(
+                              children: List.generate(
+                                feedback.rating.round(),
+                                (index) =>
+                                    const Icon(Icons.star, color: Colors.amber),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showFeedbackDialog,
